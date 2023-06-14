@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        const element = {
+            type: "div",
+            props: {
+                id: "container",
+                children: [
+                    { type: "input", props: { value: "foo", type: "text", onChange: e => alert(e.target.value) } },
+                    { type: "a", props: { href: "/bar" } },
+                    { type: "span", props: {} }
+                ]
+            }
+        };
+
+        function render1(element, parentDom) {
+            const { type, props } = element; // 获取类型 和 属性对象
+            const dom = document.createElement(type); // 创建-类型-element
+            const childElements = props.children || []; // 获取-孩子
+            childElements.forEach(childElement => render(childElement, dom)); // 每个孩子 都要加入-爸爸妈妈-的怀抱
+            parentDom.appendChild(dom); // 爸爸妈妈加入爷爷奶奶的怀抱
+        }
+        function render(element, parentDom) {
+            const { type, props } = element;
+            const dom = document.createElement(type);
+
+            const isListener = name => name.startsWith("on");
+            // 是否开头-on
+            Object.keys(props).filter(isListener).forEach(name => {
+                console.log(name, 'name');
+                const eventType = name.toLowerCase().substring(2); // 取两位后
+                console.log(eventType, 'eventType');
+                dom.addEventListener(eventType, props[name]);
+            });
+            // 每一个开头-on 的属性-对应-函数 props[name] - >用-dom-addEvent 接连
+
+            const isAttribute = name => !isListener(name) && name != "children";
+            // 不是-监听事件 和 不能是-孩子 
+
+            Object.keys(props).filter(isAttribute).forEach(name => {
+                dom[name] = props[name];
+            });
+            // 过滤出来的属性 - 赋予 - > dom
+            const childElements = props.children || [];
+            childElements.forEach(childElement => render(childElement, dom));
+            parentDom.appendChild(dom);
+        }
+        render(element, document.getElementById("root"));
+    </script>
+</body>
+
+</html>

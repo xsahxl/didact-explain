@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const config = {
     mode: 'development',
     devtool: false,
-    entry: './src/main.jsx',
+    entry: './src/didact.jsx',
     resolve: {
         // 导入 js 和 jsx 时可以不用写后缀
         extensions: ['.js', '.jsx'],

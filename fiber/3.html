@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        function createElement(type, props, ...children) {
+            return {
+                type,
+                props: {
+                    ...props,
+                    children: children.map(child =>
+                        typeof child === "object"
+                            ? child
+                            : createTextElement(child)
+                    ),
+                },
+            }
+        }
+
+        function createTextElement(value) {
+            return createElement("TEXT_ELEMENT", { nodeValue: value });
+        }
+
+        function render(element, container) {
+            console.log(element);
+            const dom =
+                element.type == "TEXT_ELEMENT"
+                    ? document.createTextNode("")
+                    : document.createElement(element.type)
+
+            const isProperty = key => key !== "children"
+            Object.keys(element.props)
+                .filter(isProperty)
+                .forEach(name => {
+                    dom[name] = element.props[name]
+                })
+
+            element.props.children.forEach(child => render(child, dom))
+
+            container.appendChild(dom)
+        }
+
+        const Didact = {
+            createElement,
+            render,
+        }
+
+        const element = Didact.createElement(
+            "div",
+            { id: "foo" },
+            Didact.createElement("a", null, "bar"),
+            Didact.createElement("b")
+        )
+        const container = document.getElementById("root")
+        Didact.render(element, container)
+    </script>
+</body>
+
+</html>

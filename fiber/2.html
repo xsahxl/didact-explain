@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        // const element = (
+        //     <div id="foo">
+        //         <a>bar</a>
+        //         <b />
+        //     </div>
+        // )
+
+        const element = React.createElement(
+            "div",
+            { id: "foo" },
+            React.createElement("a", null, "bar"),
+            React.createElement("b")
+        )
+
+        function createElement(type, props, ...children) {
+            return {
+                type,
+                props: {
+                    ...props,
+                    children: children.map(child =>
+                        typeof child === "object"
+                            ? child
+                            : createTextElement(child)
+                    ),
+                },
+            }
+        }
+
+        function createTextElement(text) {
+            return {
+                type: "TEXT_ELEMENT",
+                props: {
+                    nodeValue: text,
+                    children: [],
+                },
+            }
+        }
+        const container = document.getElementById("root")
+        ReactDOM.render(element, container)
+    </script>
+</body>
+
+</html>

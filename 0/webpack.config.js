@@ -1,7 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const config = {
-    mode: 'development',
+    mode: isProduction ? 'production' : 'development',
     devtool: false,
     entry: './src/didact.jsx',
     resolve: {
